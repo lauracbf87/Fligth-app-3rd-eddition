@@ -4,11 +4,12 @@
         <title>Start Page</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="css/bootstrap.css">
-        <script src="js/boostrap.min.js"></script>
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <link rel="stylesheet" href="/resources/demos/style.css">
-        <script src="js/jquery-1.12.4.js"></script>
+        <script src="js/jquery-3.6.0.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="js/boostrap.min.js"></script>
         <style>
             body {
                 border: 1px solid black;
@@ -74,31 +75,48 @@
 
             </div>
         </div>
-
     </body>
     <script>
         $(document).ready(function () {
+            const paintData = (data) => {
+                str = "";
+                for(let item of data) {
+                    str += "<tr>";
+                    str += "<td>" + item.flightNo + "</td>"; 
+                    str += "<td>" + item.depLoc + "</td>"; 
+                    str += "<td>" + item.arrLoc + "</td>"; 
+                    str += "<td>" + item.validTill + "</td>"; 
+                    str += "<td>" + item.flightTime + "</td>"; 
+                    str += "<td>" + item.flightDur + "</td>"; 
+                    str += "<td>" + item.fare + "</td>"; 
+                    str += "<td>" + item.seatAvailability + "</td>"; 
+                    str += "<td>" + item.clasz + "</td>"; 
+                    str += "</tr>"
+                }
+                $('#resultsGrid').html(str);
+            };
+            
             $('.datepicker').datepicker();
             let url = 'http://localhost:8000/flightSearch';
-            let data = {
+            let requestData = {
                 "departureLocation": "",
                 "arrivalLocation": "",
                 "flightDate": "",
                 "flightClass": "",
                 "outputPreference": ""
             };
-
             $('#btnSearch').click(function () {
-               
                 $.ajax(url, {
-                    data: data,
-                    type: 'post'
-                })
-               
-                xhr.setRequestHeader('Access-Control-Allow-Origin', 'http://localhost:8000/flightSearch');
+                    type: 'post',
+                    data: JSON.stringify(requestData),
+                    contentType: 'application/json',
+                    dataType: 'json'
+                }).done((responseObj, textStatus, jqXhr) => {
+                    paintData(responseObj);
+                });
             });
+            
         });
-
 
     </script>
 </html>
